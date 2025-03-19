@@ -50,6 +50,31 @@ export const formatBitcoinAmount = (amount: number): string => {
 };
 
 /**
+ * Current Bitcoin to USD exchange rate
+ * In a production app, this would be fetched from an API
+ */
+export const BITCOIN_USD_RATE = 62000;
+
+/**
+ * Convert BTC to USD
+ */
+export const convertBitcoinToUSD = (btcAmount: number): number => {
+  return btcAmount * BITCOIN_USD_RATE;
+};
+
+/**
+ * Format a number as USD
+ */
+export const formatUSDAmount = (amount: number): string => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(amount);
+};
+
+/**
  * Default wallet address for receiving payments
  */
 export const DEFAULT_BITCOIN_ADDRESS = 'bc1qmrnkpa98xajxezxp2clqehavxxr55h8kfq9cjd';
@@ -75,4 +100,3 @@ export const getRandomBitcoinAddress = (): string => {
   // const index = Math.floor(Math.random() * sampleAddresses.length);
   // return sampleAddresses[index];
 };
-

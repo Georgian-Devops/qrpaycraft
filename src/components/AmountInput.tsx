@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { formatBitcoinAmount } from '@/utils/qrUtils';
+import { formatBitcoinAmount, convertBitcoinToUSD, formatUSDAmount } from '@/utils/qrUtils';
 import { cn } from '@/lib/utils';
 
 interface AmountInputProps {
@@ -57,6 +57,10 @@ const AmountInput: React.FC<AmountInputProps> = ({
     setIsInvalid(false);
   };
 
+  // Calculate USD equivalent
+  const usdAmount = convertBitcoinToUSD(parseFloat(inputValue) || 0);
+  const formattedUsdAmount = formatUSDAmount(usdAmount);
+
   return (
     <div className={cn("space-y-4", className)}>
       <div className="space-y-2">
@@ -80,11 +84,17 @@ const AmountInput: React.FC<AmountInputProps> = ({
             BTC
           </div>
         </div>
-        {isInvalid && (
-          <p className="text-red-500 text-xs mt-1 animate-slide-up">
-            Please enter a valid number
-          </p>
-        )}
+        <div className="flex justify-between items-center">
+          {isInvalid ? (
+            <p className="text-red-500 text-xs mt-1 animate-slide-up">
+              Please enter a valid number
+            </p>
+          ) : (
+            <p className="text-slate-600 text-xs mt-1">
+              ≈ {formattedUsdAmount} USD
+            </p>
+          )}
+        </div>
       </div>
 
       <div className="py-2">

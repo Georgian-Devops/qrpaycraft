@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,13 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import AmountInput from '@/components/AmountInput';
 import PaymentStatus, { PaymentStatusType } from '@/components/PaymentStatus';
-import { generateBitcoinQR, formatBitcoinAmount, DEFAULT_BITCOIN_ADDRESS } from '@/utils/qrUtils';
+import { 
+  generateBitcoinQR, 
+  formatBitcoinAmount, 
+  DEFAULT_BITCOIN_ADDRESS,
+  formatUSDAmount,
+  convertBitcoinToUSD
+} from '@/utils/qrUtils';
 import { cn } from '@/lib/utils';
 
 interface QRCodeGeneratorProps {
@@ -25,7 +30,6 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({ className }) => {
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   
-  // Simulate loading and initialize
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -34,7 +38,6 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({ className }) => {
     return () => clearTimeout(timer);
   }, []);
   
-  // Generate QR code whenever amount or address changes
   useEffect(() => {
     if (!address || isLoading) return;
     
@@ -58,11 +61,8 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({ className }) => {
     generateQR();
   }, [address, amount, isLoading, toast]);
   
-  // For demo: simulate payment status changes when clicking the QR code
-  // Note: In a production app, this would be replaced with real blockchain monitoring
   const simulatePayment = () => {
     if (status === 'confirmed' || status === 'failed') {
-      // Reset for new demo
       setStatus('pending');
       setConfirmations(0);
       return;
@@ -72,7 +72,6 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({ className }) => {
       setStatus('processing');
       setConfirmations(1);
       
-      // Simulate confirmations
       const interval = setInterval(() => {
         setConfirmations(prev => {
           const next = prev + 1;
@@ -83,8 +82,6 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({ className }) => {
               title: "Payment Confirmed",
               description: "Your Bitcoin payment has been successfully confirmed!",
             });
-            
-            // Here we would save the transaction to user history when user auth is implemented
             
             return 6;
           }
@@ -118,6 +115,9 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({ className }) => {
     setConfirmations(0);
     setTimeout(() => setIsLoading(false), 500);
   };
+
+  const usdAmount = convertBitcoinToUSD(amount);
+  const formattedUsdAmount = formatUSDAmount(usdAmount);
 
   return (
     <div className={cn("w-full max-w-md mx-auto", className)}>
@@ -231,8 +231,11 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({ className }) => {
         
         <CardFooter className="flex flex-col space-y-4 pt-2">
           <Separator />
-          <div className="w-full flex items-center justify-between text-sm text-gray-500">
-            <span>Total: {formatBitcoinAmount(amount)} BTC</span>
+          <div className="w-full flex items-center justify-between text-sm">
+            <div className="text-gray-500">
+              <div>Total: {formatBitcoinAmount(amount)} BTC</div>
+              <div className="text-xs">≈ {formattedUsdAmount} USD</div>
+            </div>
             {status === 'confirmed' ? (
               <Button
                 size="sm"
