@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import AmountInput from '@/components/AmountInput';
 import PaymentStatus, { PaymentStatusType } from '@/components/PaymentStatus';
-import { generateBitcoinQR, formatBitcoinAmount, getRandomBitcoinAddress } from '@/utils/qrUtils';
+import { generateBitcoinQR, formatBitcoinAmount, DEFAULT_BITCOIN_ADDRESS } from '@/utils/qrUtils';
 import { cn } from '@/lib/utils';
 
 interface QRCodeGeneratorProps {
@@ -18,7 +18,7 @@ interface QRCodeGeneratorProps {
 const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({ className }) => {
   const { toast } = useToast();
   const [amount, setAmount] = useState<number>(0.001);
-  const [address, setAddress] = useState<string>('');
+  const [address, setAddress] = useState<string>(DEFAULT_BITCOIN_ADDRESS);
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const [status, setStatus] = useState<PaymentStatusType>('pending');
   const [confirmations, setConfirmations] = useState<number>(0);
@@ -28,7 +28,6 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({ className }) => {
   // Simulate loading and initialize
   useEffect(() => {
     const timer = setTimeout(() => {
-      setAddress(getRandomBitcoinAddress());
       setIsLoading(false);
     }, 1000);
     
@@ -60,6 +59,7 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({ className }) => {
   }, [address, amount, isLoading, toast]);
   
   // For demo: simulate payment status changes when clicking the QR code
+  // Note: In a production app, this would be replaced with real blockchain monitoring
   const simulatePayment = () => {
     if (status === 'confirmed' || status === 'failed') {
       // Reset for new demo
@@ -83,6 +83,9 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({ className }) => {
               title: "Payment Confirmed",
               description: "Your Bitcoin payment has been successfully confirmed!",
             });
+            
+            // Here we would save the transaction to user history when user auth is implemented
+            
             return 6;
           }
           return next;
@@ -113,7 +116,6 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({ className }) => {
     setIsLoading(true);
     setStatus('pending');
     setConfirmations(0);
-    setAddress(getRandomBitcoinAddress());
     setTimeout(() => setIsLoading(false), 500);
   };
 

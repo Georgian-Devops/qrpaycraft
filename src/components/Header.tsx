@@ -33,6 +33,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
           <a href="#" className="text-sm font-medium hover:text-blue-600 transition-colors animate-hover">Features</a>
           <a href="#" className="text-sm font-medium hover:text-blue-600 transition-colors animate-hover">Pricing</a>
           <a href="#" className="text-sm font-medium hover:text-blue-600 transition-colors animate-hover">Documentation</a>
+          <a href="#" className="text-sm font-medium hover:text-blue-600 transition-colors animate-hover">Dashboard</a>
         </nav>
         
         <div className="flex items-center space-x-3">
@@ -47,7 +48,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
             size="sm"
             className="text-sm bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 transition-all animate-hover"
           >
-            Get Started
+            Register
           </Button>
         </div>
       </div>

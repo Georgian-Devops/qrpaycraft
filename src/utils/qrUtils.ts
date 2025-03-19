@@ -50,9 +50,15 @@ export const formatBitcoinAmount = (amount: number): string => {
 };
 
 /**
+ * Default wallet address for receiving payments
+ */
+export const DEFAULT_BITCOIN_ADDRESS = 'bc1qmrnkpa98xajxezxp2clqehavxxr55h8kfq9cjd';
+
+/**
  * Sample Bitcoin addresses for testing
  */
 export const sampleAddresses = [
+  DEFAULT_BITCOIN_ADDRESS, // Primary wallet address
   '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa', // Satoshi's address
   '3E8ociqZa9mZUSwGdSmAEMAoAxBK3FNDcd',
   'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4',
@@ -62,6 +68,11 @@ export const sampleAddresses = [
  * Get a random Bitcoin address from sample list (for demo purposes)
  */
 export const getRandomBitcoinAddress = (): string => {
-  const index = Math.floor(Math.random() * sampleAddresses.length);
-  return sampleAddresses[index];
+  // Always return the default address for live payments
+  return DEFAULT_BITCOIN_ADDRESS;
+  
+  // For testing with multiple addresses, uncomment below:
+  // const index = Math.floor(Math.random() * sampleAddresses.length);
+  // return sampleAddresses[index];
 };
+
