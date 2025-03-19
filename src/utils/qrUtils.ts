@@ -63,6 +63,13 @@ export const convertBitcoinToUSD = (btcAmount: number): number => {
 };
 
 /**
+ * Convert USD to BTC
+ */
+export const convertUSDToBitcoin = (usdAmount: number): number => {
+  return usdAmount / BITCOIN_USD_RATE;
+};
+
+/**
  * Format a number as USD
  */
 export const formatUSDAmount = (amount: number): string => {

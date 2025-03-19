@@ -4,7 +4,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { formatBitcoinAmount, convertBitcoinToUSD, formatUSDAmount } from '@/utils/qrUtils';
+import { 
+  formatBitcoinAmount, 
+  convertBitcoinToUSD, 
+  formatUSDAmount, 
+  BITCOIN_USD_RATE 
+} from '@/utils/qrUtils';
 import { cn } from '@/lib/utils';
 
 interface AmountInputProps {
@@ -23,6 +28,9 @@ const AmountInput: React.FC<AmountInputProps> = ({
   
   // Predefined amount options for quick selection
   const amountPresets = [0.0001, 0.001, 0.01, 0.1];
+  
+  // USD preset amounts
+  const usdPresets = [5, 15, 100];
   
   // Format value when it changes externally
   useEffect(() => {
@@ -54,6 +62,16 @@ const AmountInput: React.FC<AmountInputProps> = ({
   const handlePresetClick = (amount: number) => {
     setInputValue(amount.toString());
     onChange(amount);
+    setIsInvalid(false);
+  };
+
+  // Handle USD preset button clicks
+  const handleUsdPresetClick = (usdAmount: number) => {
+    // Convert USD to BTC using the exchange rate
+    const btcAmount = usdAmount / BITCOIN_USD_RATE;
+    const roundedBtcAmount = parseFloat(btcAmount.toFixed(8)); // Round to 8 decimal places (satoshi precision)
+    setInputValue(roundedBtcAmount.toString());
+    onChange(roundedBtcAmount);
     setIsInvalid(false);
   };
 
@@ -112,18 +130,42 @@ const AmountInput: React.FC<AmountInputProps> = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-2">
-        {amountPresets.map((amount) => (
+      <div className="space-y-3">
+        <div className="grid grid-cols-4 gap-2">
+          {amountPresets.map((amount) => (
+            <Button
+              key={amount}
+              variant="outline"
+              size="sm"
+              onClick={() => handlePresetClick(amount)}
+              className="animate-hover backdrop-blur-sm bg-white/60 border border-slate-200 hover:bg-slate-100 transition-all"
+            >
+              {formatBitcoinAmount(amount)} BTC
+            </Button>
+          ))}
+        </div>
+        
+        <div className="grid grid-cols-4 gap-2">
+          {usdPresets.map((amount) => (
+            <Button
+              key={amount}
+              variant="outline"
+              size="sm"
+              onClick={() => handleUsdPresetClick(amount)}
+              className="animate-hover backdrop-blur-sm bg-white/60 border border-slate-200 hover:bg-slate-100 transition-all"
+            >
+              ${amount}
+            </Button>
+          ))}
           <Button
-            key={amount}
             variant="outline"
             size="sm"
-            onClick={() => handlePresetClick(amount)}
+            onClick={() => handleUsdPresetClick(500)}
             className="animate-hover backdrop-blur-sm bg-white/60 border border-slate-200 hover:bg-slate-100 transition-all"
           >
-            {formatBitcoinAmount(amount)} BTC
+            $500
           </Button>
-        ))}
+        </div>
       </div>
     </div>
   );
